@@ -3,7 +3,7 @@ Calliope model of the island of Krk in Croatia, connected to the mainland and se
 
 For more information on the model structure and general use of Calliope, see [the documentation](https://calliope.readthedocs.io/en/stable/).
 
-![Krk (Croatia) and nearby islands map](Krk_(Croatia)_and_nearby_islands)
+![Krk (Croatia) and nearby islands map](Krk_(Croatia)_and_nearby_islands.png)
 
 This model has been used in the following paper: `to be added...`
 
