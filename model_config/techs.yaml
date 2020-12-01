@@ -1,0 +1,620 @@
+tech_groups:
+
+techs:
+
+    # power to gas
+    
+    
+    PEM_fuel_cell:
+        essentials:
+            name: 'PEM fuel cell'
+            color: '#3B61E3'
+            parent: conversion
+            carrier_in: hydrogen
+            carrier_out: electricity
+        constraints:
+            energy_eff: 0.5
+            lifetime: 10
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 1900
+                om_annual: 95
+                om_prod: 0.0001
+                
+    PEM_electrolysis:
+        essentials:
+            name: 'PEM electrolysis'
+            color: '#3B61E3'
+            parent: conversion
+            carrier_in: electricity
+            carrier_out: hydrogen
+        constraints:
+            energy_eff: 0.58
+            lifetime: 15
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 1896
+                om_annual: 163
+                om_prod: 0.0001
+
+    Hydrogen_storage:
+        essentials:
+            name: 'Hydrogen storage'
+            color: '#3B61E3'
+            parent: storage
+            carrier: hydrogen
+        constraints:
+            energy_cap_max: inf  # kW
+            storage_cap_max: inf
+            energy_cap_per_storage_cap_max: 0.2 
+            #ratio of maximum charge/discharge (kW) for a given maximum storage capacity (kWh)
+            energy_eff: 0.975
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                storage_cap: 11  # EUR per kWh storage capacity, 2030 cost 
+                energy_cap: 3000
+        
+        
+    #selling electricity outside
+    export_EE:
+        essentials:
+            name: 'Export electricity'
+            color: '#F7DF22'
+            parent: storage
+            carrier: electricity
+        constraints:
+            energy_cap_per_storage_cap_equals: 1
+            lifetime: 25
+        costs:
+            monetary:        
+                interest_rate: 0.1
+                storage_cap: 0.00001 #EUR per kWh storage capacity, 2030 cost
+
+    # supply-start
+    supply_grid_power_Melina:
+        essentials:
+            name: 'National grid import'
+            color: '#C5ABE3'
+            parent: supply
+            carrier_out: electricity
+
+        constraints:
+            export_carrier: electricity 
+            energy_cap_equals: 100000 #kW
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 0.000001 #because costs are taken into account via transmission lines
+                om_con: 0 #12EUR/MWh distribution and transmission fees - taken into account via losses
+                om_prod: file=Cropex_DA_halfhourly_prices.csv 
+            CO2emissions:
+                om_prod: 0.012293 #5.83 EUR/t 2017 CO2 price, implicitly included in the price
+                # added 49.2 EUR/t to reach the total price of 55 EUR/t, 0.250 kgCO2/kWh
+
+                
+    supply_grid_power_Crikvenica:
+        essentials:
+            name: 'National grid import Crikvenica'
+            color: '#C5ABE3'
+            parent: supply
+            carrier_out: electricity
+
+        constraints:
+            export_carrier: electricity 
+            energy_cap_equals: 70000 #kW
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 0.000001 #because costs are taken into account via transmission lines
+                om_con: 0 #12EUR/MWh distribution and transmission fees - taken into account via losses
+                om_prod: file=Cropex_DA_halfhourly_prices.csv
+            CO2emissions:
+                om_prod: 0.012293 #5.83 EUR/t 2017 CO2 price, implicitly included in the price
+                # added 49.2 EUR/t to reach the total price of 55 EUR/t, 0.250 kgCO2/kWh
+
+    supply_biomass:
+        essentials:
+            name: 'biomass import'
+            color: '#C98AAD'
+            parent: supply
+            carrier: biomass           
+        constraints:
+            resource: inf #kWh
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 0.00001 #very small number as we want to put biomass price as om_con
+                om_prod: 0.014 # EUR/kWh 50 EUR/t, 3.6 MWh/t; = 13.88 EUR/MWh
+                                
+    supply_gasoline:
+        essentials:
+            name: 'gasoline import'
+            color: '#C45AAD'
+            parent: supply
+            carrier: gasoline           
+        constraints:
+            resource: inf #kWh
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 0.00001 #very small number as we want to put gasoline price as om_con
+
+    pv_residential: #small systems, typically up to 6kW
+        essentials:
+            name: 'PV residential'
+            color: '#F9D956'
+            parent: supply
+            carrier_out: electricity            
+        constraints:
+            export_carrier: electricity
+            resource: file=KrkPVGen.csv  # Already accounts for panel efficiency 
+            resource_unit: energy_per_cap #energy per cap in kWh/kW
+            energy_cap_max: inf
+            lifetime: 30
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 1070 #EUR/kW, 2020 expected cost was 1070
+                om_annual: 12.8  # EUR/kW, 2020, medium
+                om_prod: 0.000001
+
+    pv_utilityScale: #large systems, typically around 4 MW
+        essentials:
+            name: 'PV utility scale'
+            color: '#1808A7'
+            parent: supply
+            carrier_out: electricity            
+        constraints:
+            export_carrier: electricity
+            resource: file=KrkPVGen.csv  # Already accounts for panel efficiency
+            resource_unit: energy_per_cap #energy per cap in kWh/kW
+            energy_cap_max: inf
+            lifetime: 35
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 620 #EUR/kW, 2020 expected cost
+                om_annual: 8.1  # EUR/kW, 2020, medium
+                om_prod: 0.000001
+                export: file=Export_halfhourly_prices.csv #99% of the price for income from the national grid
+
+    wind_onshore:
+        essentials:
+            name: 'wind power onshore'
+            color: '#363547'
+            parent: supply
+            carrier_out: electricity            
+        constraints:
+            export_carrier: electricity
+            resource: file=KrkWindGen.csv  # Already accounts for panel efficiency 
+            resource_unit: energy_per_cap #energy per cap in kWh/kW
+            energy_cap_max: inf
+            lifetime: 27
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 1120 #EUR per kW, 2020
+                om_annual: 14  # EUR/kW, 2020, medium
+                om_prod: 0.000001
+                export: file=Export_halfhourly_prices.csv #99% of the price for income from the national grid
+
+    wind_offshore:
+        essentials:
+            name: 'wind power offshore'
+            color: '#9E55AE'
+            parent: supply
+            carrier_out: electricity            
+        constraints:
+            export_carrier: electricity
+            resource: file=KrkWindGenOffshore.csv  # Already accounts for panel efficiency
+            resource_unit: energy_per_cap #energy per cap in kWh/kW
+            energy_cap_max: 55000
+            lifetime: 27
+        costs:
+            monetary:
+                interest_rate: 0.10
+                om_prod: 0.000001
+                energy_cap: 2130 #EUR per kW, 2020
+                om_annual: 40  # EUR/kW, 2020, medium
+                export: file=Export_halfhourly_prices.csv #99% of the price for income from the national grid
+
+    # csp-start
+    csp:        #from: https://www.solarpaces.org/irena-report-2017-notes-spectacular-cost-reductions-csp/
+        essentials:
+            name: 'Concentrating solar power'
+            color: '#F9CF22'
+            parent: supply_plus
+            carrier_out: electricity
+        constraints:
+            export_carrier: electricity
+            storage_cap_max: 10000000
+            energy_cap_per_storage_cap_equals: 0.14 #equal to 7 hours of storage (1/7)
+            storage_loss: 0.002
+            resource: file=KrkPVGen.csv
+            resource_unit: energy_per_cap
+            energy_eff: 0.99
+            energy_cap_max: 1000000
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                storage_cap: 450 #from IRENA EUR/kWh
+                resource_area: 200
+                resource_cap: 200
+                energy_cap: 2295 # EUR/kW from IRENA
+                om_prod: 0.002
+    # csp-end
+    
+    ##
+    # Storage
+    ##
+    # battery-start
+    battery_LiIon:
+        essentials:
+            name: 'Battery storage'
+            color: '#3B61E3'
+            parent: storage
+            carrier: electricity
+        constraints:
+            energy_cap_max: inf  # kW
+            storage_cap_max: inf
+            energy_cap_per_storage_cap_equals: 0.5 
+            #ratio of maximum charge/discharge (kW) for a given maximum storage capacity (kWh)
+            energy_eff: 0.975  
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                storage_cap: 142  # EUR per kWh storage capacity, 2030 cost 
+                om_prod: 0.002
+                om_annual: 0.54
+    # battery-end
+
+    Heat_accumulator:
+        essentials:
+            name: 'Heat storage'
+            color: '#2A16D7'
+            parent: storage
+            carrier: heat
+        constraints:
+            storage_cap_max: inf
+            energy_cap_per_storage_cap_equals: 0.08
+            energy_eff: 0.95  # 0.95 * 0.95 = 0.9025 round trip efficiency
+            storage_loss: 0  # No loss over time assumed
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                storage_cap: 0.55  # EUR per kWh storage capacity, individual tanks
+    # heat storage-end
+
+    ##
+    BiogasGasification:
+        essentials:
+            name: 'Biogass gasification'
+            color: '#D52C55'
+            parent: supply_plus
+            carrier_out: biogas
+        constraints:
+            energy_cap_max: 1000000000
+            energy_eff: 1
+            lifetime: 25
+            energy_cap_per_storage_cap_max: 0.1
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 1810
+                om_annual: 198 #
+                om_prod: 0.00001
+                storage_cap: 11 #EUR/kWh
+
+    WasteDummy:
+        essentials:
+            name: 'Waste dummy'
+            color: '#D52C55'
+            parent: supply_plus
+            carrier_out: waste
+        constraints:
+            energy_cap_max: inf
+            energy_eff: 1
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 0.00001
+                storage_cap: 1110 #EUR/kWh
+
+    BiogasEngine: 
+        essentials:
+            name: 'Biogass Engine'
+            color: '#D52C55'
+            parent: conversion
+            carrier_out: electricity
+            carrier_in: biogas
+        constraints:
+            energy_cap_max: inf
+            energy_eff: 0.45
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 950
+                om_annual: 9.75 #
+                om_prod: 0.0054
+
+    # chp-start
+    WasteIncinerator: #straw, small - typical size 20 MW
+        essentials:
+            name: 'Waste incinerator'
+            color: '#E4BB97'
+            parent: conversion
+            carrier_in: waste
+            carrier_out: electricity
+        constraints:
+            energy_cap_max: inf
+            energy_eff: 0.235  #efficiency for small wte plants
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 10500
+                om_prod: 0.0058
+                om_con: -0.00424
+                om_annual: 96           
+    
+    BioPP: #straw, small - typical size 20 MW
+        essentials:
+            name: 'Biomass PP'
+            color: '#E4BB97'
+            parent: conversion
+            carrier_in: biomass
+            carrier_out: electricity
+        constraints:
+            energy_cap_max: inf
+            energy_eff: 0.29  #efficiency for plants 15-25 MW
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 6000
+                om_prod: 0.0078
+                om_annual: 288.9            
+    # chp-end
+
+    # BIOboiler-start
+    BIOboiler:      #typical size 10 kW
+        essentials:
+            name: 'Biomass boiler individual'
+            color: '#8E2999'
+            parent: conversion
+            carrier_out: heat
+            carrier_in: biomass
+        constraints:
+            energy_eff: 0.8
+            lifetime: 20
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 680               
+                om_prod: 0.0001
+    # BIOboiler-end
+   
+    HP_Air:
+        essentials:
+            name: 'Heat pump ind air-to-water'
+            color: '#D73816'
+            parent: conversion_plus
+            carrier_out: [heat,cooling]
+            primary_carrier_out: heat
+            carrier_in: electricity
+        constraints:
+            energy_eff: 1 #radiators (not floor heating)
+            # 1 because it COP is taken into account further down
+            carrier_ratios:
+                carrier_out:
+                    heat: 3.5
+                    cooling: 2.5            
+            lifetime: 18
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 1750 #EUR/kW of heat production, 2020, for new one family houses        
+                om_prod: 0.0005
+
+    HP_Ground:  #ground source HP for new one family houses
+        essentials:
+            name: 'Heat pump ind ground source'
+            color: '#D4D52C'
+            parent: conversion_plus
+            carrier_out: [heat,cooling]
+            primary_carrier_out: heat
+            carrier_in: electricity
+        constraints:
+            energy_eff: 1 #radiators (not floor heating); taken from existing houses (possibly a mistake in new houses)
+            lifetime: 20
+            carrier_ratios:
+                carrier_out:
+                    heat: 5.5
+                    cooling: 3.5            
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 2750 #EUR/kW of heat production, 2020, for new one family houses        
+                om_prod: 0.0005
+
+    El_Boiler_individual: #individual electric boiler
+        essentials:
+            name: 'Electric boilers individual'
+            color: '#D4D52C'
+            parent: conversion
+            carrier_out: heat
+            carrier_in: electricity
+        constraints:
+            energy_eff: 0.95 
+            lifetime: 20
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 1000 #EUR/kW of heat production, 2020, for new one family houses        
+                om_annual: 0.008
+                om_prod: 0.0001
+    
+    solar_thermal_residential: #small systems
+        essentials:
+            name: 'solar thermal residential'
+            color: '#D57F2C'
+            parent: supply_plus
+            carrier_out: heat            
+        constraints:
+            resource: file=KrkPVGen.csv  # Already accounts for panel efficiency 
+            resource_unit: energy_per_cap #energy per cap in kWh/kW
+            parasitic_eff: 1 # inverter losses, was 0.85
+            #but it is already accounted for in the dataset
+            storage_cap_max: inf
+            energy_cap_per_storage_cap_equals: 0.08 #12hours of storage capacity           
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 857 #EUR/kW, 2020 expected cost
+                storage_cap: 37 #EUR/kWh
+                om_annual: 16.2  # EUR/kW, 2020, medium size
+                om_prod: 0.0001
+
+    gasoline_vehicles:
+        essentials:
+            name: 'gasoline vehicles'
+            color: '#D53F2C'
+            parent: conversion
+            carrier_in: gasoline
+            carrier_out: el_transport
+        constraints:
+            energy_eff: 0.286 #3.5 times less efficient than el vehicles
+            lifetime: 12
+        costs:
+            monetary:
+                interest_rate: 0.1
+                energy_cap: 850 #EUR/ kW - ratio made per electric vehicles
+                om_annual: 27 #1000 eur per vehicle per year
+                om_prod: 0.076 # EUR/kWh - 65EUR/barrel, 2barrels for one barrel of gasoline - gives 5.7DKK/liter of diesel
+            CO2emissions:
+                om_prod: 0.01485 #55 EUR/t, 0.270 kgCO2/kWh
+
+    hydrogen_vehicles:
+        essentials:
+            name: 'hydrogen vehicles'
+            color: '#D43F2C'
+            parent: conversion
+            carrier_in: hydrogen
+            carrier_out: el_transport
+        constraints:
+            energy_eff: 0.5 # 2 times less efficient than el vehicles
+            lifetime: 12
+        costs:
+            monetary:
+                interest_rate: 0.1
+                energy_cap: 2900 #EUR/ kW - ratio made per electric vehicles
+                om_annual: 15 #1000 eur per vehicle per year
+                om_prod: 0.000001 # taken into account with hydrogen production
+
+    electric_vehicles:
+        essentials:
+            name: 'electric vehicles'
+            color: '#D33F2C'
+            parent: conversion
+            carrier_in: electricity
+            carrier_out: el_transport
+        constraints:
+            energy_eff: 1
+            lifetime: 12
+        costs:
+            monetary:
+                interest_rate: 0.1
+                energy_cap: 1750 #EUR/ kW - gives 35 000 EUR per vehicle
+                om_annual: 12.5 #250 eur per vehicle per year
+                om_prod: 0.000001 # taken into account with electricity production
+
+    # demand-start
+    demand_electricity:
+        essentials:
+            name: 'ElectricalDemand'
+            color: '#072486'
+            parent: demand
+            carrier: electricity
+
+    demand_heat:
+        essentials:
+            name: 'Heat demand'
+            color: '#660507'
+            parent: demand
+            carrier: heat
+            
+    demand_cooling:
+        essentials:
+            name: 'Cooling demand'
+            color: '#660507'
+            parent: demand
+            carrier: cooling
+            
+    demand_transport:       # electric demand for the transport sector
+        essentials:
+            name: 'Transport demand' #related to electric demand
+            color: '#660507'
+            parent: demand
+            carrier: el_transport
+    # demand-end
+
+    # transmission-start
+    electricity_lines:
+        essentials:
+            name: 'Electrical power distribution'
+            color: '#6783E3'
+            parent: transmission
+            carrier: electricity
+        constraints:
+            energy_eff: 0.96
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap_per_distance: 0.01 #EUR/KW per distance
+
+    electr_export_lines:
+        essentials:
+            name: 'Elec export lines'
+            color: '#6883E3'
+            parent: transmission
+            carrier: electricity
+        constraints:
+            energy_eff: 1
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap_per_distance: 0.000001 #EUR/KW per distance
+                om_prod: 0.1
+
+
+    heat_pipes:
+        essentials:
+            name: 'District heat distribution'
+            color: '#823739'
+            parent: transmission
+            carrier: heat
+        constraints:
+            energy_eff_per_distance: 0.975
+            lifetime: 30
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap_per_distance: 0.3 #kW per unit distance
+    # transmission-end
+

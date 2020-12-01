@@ -1,0 +1,187 @@
+overrides:
+           
+    Max5PercentElectrified: #this is Scenario 1
+        group_constraints:
+            min_electrified_transport:
+                techs: ['electric_vehicles']
+                locs: ['X1','X2','X3']
+                demand_share_per_timestep_max:
+                    el_transport: 0.05 #max 5 percent electrified transport
+        techs:
+            pv_residential.costs.monetary.interest_rate: 0.05
+
+    Min25PercentElectrified: #this is Scenario 2
+        group_constraints:
+            min_electrified_transport:
+                techs: ['electric_vehicles']
+                locs: ['X1','X2','X3']
+                demand_share_per_timestep_min:
+                    el_transport: 0.25 #min 25 percent electrified transport
+        techs:
+            pv_residential.costs.monetary.interest_rate: 0.05
+
+    Min65Elemin5percentHydrogenTransport: #this is Scenario 3
+        group_constraints:
+            min_electrified_transport:
+                techs: ['electric_vehicles']
+                locs: ['X1','X2','X3']
+                demand_share_per_timestep_min:
+                    el_transport: 0.65 #min 65 percent electrified transport
+            min_hydrogen_transport:
+                techs: ['hydrogen_vehicles']
+                locs: ['X1','X2','X3']
+                demand_share_per_timestep_min:
+                    el_transport: 0.05 #min 5 percent hydrogen transport
+        techs:
+            pv_residential.costs.monetary.interest_rate: 0.05                    
+  
+                    
+    HourlyTimeResMin65eleTrans: #this is Sensitivity analysis 1
+        locations:
+            X1:
+                techs:
+                    pv_residential.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    pv_residential.costs.monetary.interest_rate: 0.05                    
+                    pv_utilityScale.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    csp.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    solar_thermal_residential.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    wind_onshore.constraints.resource: file=KrkWindGen_HOURLY.csv
+                    pv_utilityScale.costs.monetary.export: file=ExportPricesHourly.csv
+                    wind_onshore.costs.monetary.export: file=ExportPricesHourly.csv
+
+                    demand_electricity:
+                        constraints.resource: file=KrkLoad_HOURLY.csv
+                    demand_heat:
+                        constraints.resource: file=HeatDemand_HOURLY.csv
+                    demand_cooling:
+                        constraints.resource: file=CoolingDemand_HOURLY.csv
+                    demand_transport:
+                        constraints.resource: file=Transport_demand_electricityDUMBC_HOURLY.csv
+            X2:
+                techs:
+                    pv_residential.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    pv_residential.costs.monetary.interest_rate: 0.05                    
+                    pv_utilityScale.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    csp.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    solar_thermal_residential.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    wind_onshore.constraints.resource: file=KrkWindGen_HOURLY.csv
+                    pv_utilityScale.costs.monetary.export: file=ExportPricesHourly.csv
+                    wind_onshore.costs.monetary.export: file=ExportPricesHourly.csv
+
+                    demand_electricity:
+                        constraints.resource: file=KrkLoad_HOURLY.csv
+                    demand_heat:
+                        constraints.resource: file=HeatDemand_HOURLY.csv
+                    demand_cooling:
+                        constraints.resource: file=CoolingDemand_HOURLY.csv
+                    demand_transport:
+                        constraints.resource: file=Transport_demand_electricityDUMBC_HOURLY.csv
+            X3:
+                techs:
+                    pv_residential.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    pv_residential.costs.monetary.interest_rate: 0.05                    
+                    pv_utilityScale.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    csp.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    solar_thermal_residential.constraints.resource: file=KrkPVGen_HOURLY.csv
+                    wind_onshore.constraints.resource: file=KrkWindGen_HOURLY.csv
+                    pv_utilityScale.costs.monetary.export: file=ExportPricesHourly.csv
+                    wind_onshore.costs.monetary.export: file=ExportPricesHourly.csv
+
+                    demand_electricity:
+                        constraints.resource: file=KrkLoad_HOURLY.csv
+                    demand_heat:
+                        constraints.resource: file=HeatDemand_HOURLY.csv
+                    demand_cooling:
+                        constraints.resource: file=CoolingDemand_HOURLY.csv
+                    demand_transport:
+                        constraints.resource: file=Transport_demand_electricityDUMBC_HOURLY.csv
+            X4:
+                techs:
+                    demand_electricity:
+                        constraints.resource: file=KrkLoad_HOURLY.csv
+            X5:
+                techs:
+                    demand_electricity:
+                        constraints.resource: file=KrkLoad_HOURLY.csv
+            X6: # Melina national grid
+                techs:
+                    supply_grid_power_Melina.costs.monetary.om_prod: file=CropexHourly.csv
+            X7: # Crikvenica national grid
+                techs:
+                    supply_grid_power_Crikvenica.costs.monetary.om_prod: file=CropexHourly.csv
+
+            X10:
+                techs:
+                    wind_offshore.constraints.resource: file=KrkWindGenOffshore_HOURLY.csv
+                    wind_offshore.costs.monetary.export: file=ExportPricesHourly.csv
+
+        group_constraints:
+            min_electrified_transport:
+                techs: ['electric_vehicles']
+                locs: ['X1','X2','X3']
+                demand_share_per_timestep_min:
+                    el_transport: 0.65 #min 65 percent electrified transport
+            min_hydrogen_transport:
+                techs: ['hydrogen_vehicles']
+                locs: ['X1','X2','X3']
+                demand_share_per_timestep_min:
+                    el_transport: 0.05 #min 5 percent hydrogen transport
+
+
+    OneGeogrLocationMin65eleTrans: #this is Sensitivity analysis 2
+        locations:
+            X2.exists: false
+            X3.exists: false
+            X4.exists: false
+            X5.exists: false
+            X6.exists: false
+            X10.exists: false
+            # X6 and X7 capacity will be summed to X7 (which is connected to X1)
+            X1:
+                techs:
+                    pv_residential:
+                        constraints:
+                            energy_cap_max: 45000
+                    pv_utilityScale:
+                        constraints:
+                            energy_cap_max: 55000 
+                    wind_onshore:
+                        constraints:
+                            energy_cap_max: 75000 
+                    wind_offshore:
+                        constraints:
+                            energy_cap_max: 55000 #max 55 MW
+                            resource: file=KrkWindGenOffshoreX1.csv
+                    BiogasGasification:
+                        constraints:
+                                resource: 687 #kWh, from Marko's data; 4005796 kWh per year for 3 locations; 4005796/17520 = 229 kWh per day
+                                resource_unit: energy # kWh
+                    demand_electricity:
+                        constraints.resource: file=KrkLoad_only_X1_location.csv
+                    demand_heat:
+                        constraints.resource: file=HeatDemand_X1_only.csv
+                    demand_cooling:
+                        constraints.resource: file=CoolingDemand_X1_only.csv
+                    demand_transport:
+                        constraints.resource: file=Transport_demand_electricityDUMBC_X1_only.csv
+
+        links:
+            X7,X1: #Crikvenica national grid to Krk consumption center
+                techs:
+                    electricity_lines:
+                        constraints:
+                            energy_cap_equals: 170000 #Crikvenica + Melina
+                            energy_eff: 0.95
+        group_constraints:
+            min_electrified_transport:
+                techs: ['electric_vehicles']
+                locs: ['X1']
+                demand_share_per_timestep_min:
+                    el_transport: 0.65 #min 65 percent electrified transport
+            min_hydrogen_transport:
+                techs: ['hydrogen_vehicles']
+                locs: ['X1']
+                demand_share_per_timestep_min:
+                    el_transport: 0.05 #min 5 percent hydrogen transport
+        techs:
+            pv_residential.costs.monetary.interest_rate: 0.05                    

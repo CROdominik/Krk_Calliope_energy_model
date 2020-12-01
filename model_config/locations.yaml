@@ -1,0 +1,231 @@
+locations:
+
+    X1: #Krk consumption center
+        techs:
+            pv_residential:
+                constraints:
+                    energy_cap_max: 25000
+            pv_utilityScale:
+                constraints:
+                    energy_cap_max: 20000 
+            wind_onshore:
+                constraints:
+                    energy_cap_max: 25000 #max 25 MW
+            PEM_fuel_cell:
+            PEM_electrolysis:
+            Hydrogen_storage:
+            supply_biomass:
+            supply_gasoline:
+            csp:
+            battery_LiIon:
+            Heat_accumulator:
+                constraints:
+                    storage_cap_max: 54475
+            #hydro:
+            WasteDummy:
+                constraints:
+                    resource: 3230 #17MJ/kg at 50% moisture, 12k ton = 56 666 MWh (for the whole year); 56666/(8760*2) = 3.2 MWh = 3230 kWh
+            WasteIncinerator: 
+            BiogasGasification:
+                constraints:
+                        resource: 229 #kWh - 229 kWh per day
+                        resource_unit: energy # kWh
+            BiogasEngine:
+            BioPP:
+            BIOboiler:
+            HP_Air:
+            HP_Ground:
+            El_Boiler_individual:
+            solar_thermal_residential:
+            gasoline_vehicles:
+            hydrogen_vehicles:
+            electric_vehicles:
+            demand_electricity:
+                constraints.resource: file=KrkLoad.csv
+            demand_heat:
+                constraints.resource: file=HeatDemand.csv
+            demand_cooling:
+                constraints.resource: file=CoolingDemand.csv
+            demand_transport:
+                constraints.resource: file=Transport_demand_electricityDUMBC.csv
+
+        coordinates: {lat: 45.026484, lon: 14.573976}
+    # X1-end
+    X2: # Dunat consumption center
+        techs:
+            pv_residential:
+                constraints:
+                    energy_cap_max: 13000
+            pv_utilityScale:
+                constraints:
+                    energy_cap_max: 15000 #max 15 MW
+            wind_onshore:
+                constraints:
+                    energy_cap_max: 25000 #max 25 MW
+            PEM_fuel_cell:
+            PEM_electrolysis:
+            Hydrogen_storage:
+            supply_biomass:
+            supply_gasoline:
+            csp:
+            battery_LiIon:
+            Heat_accumulator:
+                constraints:
+                    storage_cap_max: 74935
+            WasteDummy:
+            BiogasGasification:
+                constraints:
+                        resource: 229 #kWh per day
+                        resource_unit: energy # kWh
+            BiogasEngine:
+            BioPP:
+            BIOboiler:
+            HP_Air:
+            HP_Ground:
+            El_Boiler_individual:
+            solar_thermal_residential:
+            gasoline_vehicles:
+            hydrogen_vehicles:
+            electric_vehicles:
+            demand_electricity:
+                constraints.resource: file=KrkLoad.csv
+            demand_heat:
+                constraints.resource: file=HeatDemand.csv
+            demand_cooling:
+                constraints.resource: file=CoolingDemand.csv
+            demand_transport:
+                constraints.resource: file=Transport_demand_electricityDUMBC.csv
+
+        coordinates: {lat: 44.984663, lon: 14.726450}
+
+    X3: #Omišalj consumption center
+        techs:
+            pv_residential:
+                constraints:
+                    energy_cap_max: 7000
+            pv_utilityScale:
+                constraints:
+                    energy_cap_max: 20000 #max 20 MW
+            wind_onshore:
+                constraints:
+                    energy_cap_max: 25000 #max 25 MW
+            PEM_fuel_cell:
+            PEM_electrolysis:
+            Hydrogen_storage:
+            supply_biomass:
+            supply_gasoline:
+            csp:
+            battery_LiIon:
+            Heat_accumulator:
+                constraints:
+                    storage_cap_max: 20590
+            WasteDummy:
+            BiogasGasification:
+                constraints:
+                        resource: 229 #kWh per day
+                        resource_unit: energy # kWh
+            BiogasEngine:
+            BioPP:
+            BIOboiler:
+            HP_Air:
+            HP_Ground:
+            El_Boiler_individual:
+            solar_thermal_residential:
+            gasoline_vehicles:
+            hydrogen_vehicles:
+            electric_vehicles:
+            demand_electricity:
+                constraints.resource: file=KrkLoad.csv
+            demand_heat:
+                constraints.resource: file=HeatDemand.csv
+            demand_cooling:
+                constraints.resource: file=CoolingDemand.csv
+            demand_transport:
+                constraints.resource: file=Transport_demand_electricityDUMBC.csv
+
+        coordinates: {lat: 45.211407, lon: 14.553938}
+    
+    X4: # Lošinj, fixed consumption only
+        techs:
+            demand_electricity:
+                constraints.resource: file=KrkLoad.csv
+
+        coordinates: {lat: 44.532597, lon: 14.472983}
+
+                
+    X5: # Rab, fixed consumption only, although it can be supplied from two sides
+        techs:
+            demand_electricity:
+                constraints.resource: file=KrkLoad.csv
+
+        coordinates: {lat: 44.787273, lon: 14.752202}
+
+    X6: # Melina national grid
+        techs:
+            supply_grid_power_Melina:
+
+        coordinates: {lat: 45.292298, lon: 14.582016}
+
+    X7: # Crikvenica national grid connection
+        techs:
+            supply_grid_power_Crikvenica:
+
+        coordinates: {lat: 45.173413, lon: 14.692769}
+
+    X10:
+        techs:
+            wind_offshore:
+                constraints:
+                    energy_cap_max: 55000 #max 55 MW
+        coordinates: {lat: 45.144178, lon: 14.508706}#pin in the sea on the north-west side
+            #connection possible either to Krk or Omisalj
+            
+links:
+    # links-start
+    X1,X3: #Krk to Omišalj power line
+        techs:
+            electricity_lines:
+                constraints:
+                    energy_cap_equals: 100000 #100MW
+            
+    X1,X2: #Krk to Dunat power line
+        techs:
+            electricity_lines:
+                constraints:
+                    energy_cap_equals: 100000 #100MW
+
+    X4,X1: #Lošinj to Krk power line
+        techs:
+            electricity_lines:
+                constraints:
+                    energy_cap_equals: 100000 #100MW
+
+    X5,X2: #Rab to Dunat power lines
+        techs:
+            electricity_lines:
+                constraints:
+                    energy_cap_equals: 100000 #1MW
+                    
+    X6,X3: #Melina national grid to Omišalj consumption center
+        techs:
+            electricity_lines:
+                constraints:
+                    energy_cap_equals: 100000 #100MW
+                    energy_eff: 0.95
+
+    X7,X1: #Crikvenica national grid to Krk consumption center
+        techs:
+            electricity_lines:
+                constraints:
+                    energy_cap_equals: 70000 #100MW
+                    energy_eff: 0.95
+#                costs:
+#                    monetary:
+#                        om_prod: Cropex_DA_halfhourly_prices.csv #cropex half hourly prices for 2017. interpolated half hourly values from hourly ones*
+
+    X10,X3: # offshore wind to Omišalj consumption center
+        techs:
+            electricity_lines:
+
+            
+            
